@@ -8,9 +8,17 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   define: {
-    // Garantir que as variáveis do Netlify sejam expostas corretamente
-    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL || ''),
-    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY || ''),
+    // Mapear variáveis do plugin Supabase do Netlify para os nomes esperados pelo código
+    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(
+      process.env.SUPABASE_DATABASE_URL || 
+      process.env.VITE_SUPABASE_URL || 
+      ''
+    ),
+    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(
+      process.env.SUPABASE_ANON_KEY || 
+      process.env.VITE_SUPABASE_ANON_KEY || 
+      ''
+    ),
   },
   build: {
     sourcemap: false,
