@@ -62,17 +62,28 @@ export const createCardPayment = async (data: CreatePaymentData) => {
   try {
     console.log('Iniciando criação de pagamento com cartão:', data);
     
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    // Função para obter variáveis de ambiente com fallbacks
+    const getEnvVar = (name: string): string => {
+      const value = import.meta.env[name] || 
+                    (typeof window !== 'undefined' && (window as any)[name]) ||
+                    (typeof process !== 'undefined' && process.env && process.env[name]);
+      return value || '';
+    };
+    
+    const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
+    const supabaseKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
     
     console.log('Verificando variáveis de ambiente:');
     console.log('VITE_SUPABASE_URL:', supabaseUrl ? 'Definida' : 'NÃO DEFINIDA');
     console.log('VITE_SUPABASE_ANON_KEY:', supabaseKey ? 'Definida' : 'NÃO DEFINIDA');
+    console.log('Modo de build:', import.meta.env.MODE);
+    console.log('Produção:', import.meta.env.PROD);
     
     if (!supabaseUrl || !supabaseKey) {
       console.error('Variáveis de ambiente do Supabase não encontradas');
       console.error('VITE_SUPABASE_URL:', supabaseUrl);
       console.error('VITE_SUPABASE_ANON_KEY:', supabaseKey ? 'Presente' : 'Ausente');
+      console.error('Todas as env vars:', Object.keys(import.meta.env));
       throw new Error('Sistema temporariamente indisponível. As variáveis de ambiente do Supabase não estão configuradas. Entre em contato com o administrador.');
     }
     
@@ -136,15 +147,25 @@ export const createPixPayment = async (data: CreatePaymentData) => {
   try {
     console.log('Iniciando criação de pagamento PIX:', data);
     
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    // Função para obter variáveis de ambiente com fallbacks
+    const getEnvVar = (name: string): string => {
+      const value = import.meta.env[name] || 
+                    (typeof window !== 'undefined' && (window as any)[name]) ||
+                    (typeof process !== 'undefined' && process.env && process.env[name]);
+      return value || '';
+    };
+    
+    const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
+    const supabaseKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
     
     console.log('Verificando variáveis de ambiente PIX:');
     console.log('VITE_SUPABASE_URL:', supabaseUrl ? 'Definida' : 'NÃO DEFINIDA');
     console.log('VITE_SUPABASE_ANON_KEY:', supabaseKey ? 'Definida' : 'NÃO DEFINIDA');
+    console.log('Modo de build:', import.meta.env.MODE);
     
     if (!supabaseUrl || !supabaseKey) {
       console.error('Variáveis de ambiente do Supabase não encontradas para PIX');
+      console.error('Todas as env vars:', Object.keys(import.meta.env));
       throw new Error('Sistema temporariamente indisponível. As variáveis de ambiente do Supabase não estão configuradas. Entre em contato com o administrador.');
     }
     

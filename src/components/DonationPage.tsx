@@ -22,6 +22,14 @@ export default function DonationPage() {
   // Scroll to top when component mounts
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Debug das variáveis de ambiente no carregamento da página
+    console.log('=== DEBUG DONATION PAGE ===');
+    console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL ? 'Definida' : 'NÃO DEFINIDA');
+    console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Definida' : 'NÃO DEFINIDA');
+    console.log('Modo:', import.meta.env.MODE);
+    console.log('Produção:', import.meta.env.PROD);
+    console.log('Todas as variáveis:', Object.keys(import.meta.env));
   }, []);
 
   const predefinedAmounts = [25, 50, 100, 250, 500, 1000];
