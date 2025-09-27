@@ -71,7 +71,13 @@ export default function DonationPage() {
     e.preventDefault();
     const amount = getFinalAmount();
     
-    if (amount > 0 && donorInfo.name && donorInfo.email) {
+    // Validação de valor mínimo
+    if (amount < 1) {
+      alert('O valor mínimo para doação é R$ 1,00.');
+      return;
+    }
+    
+    if (amount >= 1 && donorInfo.name && donorInfo.email) {
       setProcessing(true);
 
       // Separar fluxos de pagamento
@@ -81,7 +87,7 @@ export default function DonationPage() {
         await handlePixPayment(amount);
       }
     } else {
-      alert('Por favor, preencha todos os campos obrigatórios e selecione um valor.');
+      alert('Por favor, preencha todos os campos obrigatórios e selecione um valor mínimo de R$ 1,00.');
     }
   };
 
@@ -268,12 +274,12 @@ export default function DonationPage() {
                 </label>
                 <input
                   type="number"
-                  min="1"
+                  min="1.00"
                   step="0.01"
                   value={customAmount}
                   onChange={(e) => handleCustomAmountChange(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="Digite um valor personalizado"
+                  placeholder="Digite um valor personalizado (mín. R$ 1,00)"
                 />
               </div>
             </div>
@@ -368,7 +374,7 @@ export default function DonationPage() {
             <div className="space-y-4">
               <button
                 type="submit"
-                disabled={getFinalAmount() === 0 || !donorInfo.name || !donorInfo.email || processing}
+                disabled={getFinalAmount() < 1 || !donorInfo.name || !donorInfo.email || processing}
                 className="w-full bg-blue-600 text-white py-4 px-8 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {processing ? (
