@@ -156,6 +156,66 @@ const AdminPanel: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
+  const updateAllPendingToCompleted = async () => {
+    if (!confirm('Deseja marcar todas as doações pendentes como concluídas? Esta ação não pode ser desfeita.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('donations')
+        .update({ 
+          status: 'completed',
+          updated_at: new Date().toISOString()
+        })
+        .eq('status', 'pending');
+
+      if (error) throw error;
+      
+      alert('Todas as doações pendentes foram marcadas como concluídas!');
+      loadData(); // Recarregar dados após atualização
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+      alert('Erro ao atualizar status das doações');
+    }
+  };
+
+  const approveDonorMessage = async (donation: Donation) => {
+    if (!donation.message) return;
+    
+    try {
+      // Verificar se já existe uma mensagem aprovada para esta doação
+      const { data: existingMessage } = await supabase
+        .from('donor_messages')
+        .select('id')
+        .eq('donor_name', donation.donor_name)
+        .eq('message', donation.message)
+        .single();
+      
+      if (existingMessage) {
+        alert('Esta mensagem já foi aprovada anteriormente.');
+        return;
+      }
+      
+      // Criar nova mensagem aprovada
+      const { error } = await supabase
+        .from('donor_messages')
+        .insert([{
+          donor_name: donation.donor_name,
+          message: donation.message,
+          is_approved: true,
+          is_featured: false
+        }]);
+      
+      if (error) throw error;
+      
+      alert('Mensagem aprovada com sucesso! Ela aparecerá na página inicial.');
+    } catch (error) {
+      console.error('Erro ao aprovar mensagem:', error);
+      alert('Erro ao aprovar mensagem. Tente novamente.');
+    }
+  };
+
   const totalArrecadado = donations
     .filter(t => t.status === 'completed')
     .reduce((sum, t) => sum + t.amount, 0);
@@ -436,26 +496,54 @@ const AdminPanel: React.FC = () => {
             {/* Messages Section */}
             <div className="bg-white rounded-lg shadow">
               <div className="p-6 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Mensagens dos Doadores
-                </h3>
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Mensagens dos Doadores
+                  </h3>
+                  <button
+                    onClick={loadData}
+                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                  >
+                    Atualizar
+                  </button>
+                </div>
               </div>
               <div className="p-6 space-y-4">
-                {donations
-                  .filter(t => t.message && t.status === 'completed')
-                  .map((donation) => (
-                    <div key={donation.id} className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-medium text-gray-900">
-                          {donation.donor_name}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {new Date(donation.created_at).toLocaleDateString('pt-BR')}
-                        </span>
+                {donations.length > 0 ? (
+                  donations
+                    .filter(t => t.message && t.status === 'completed')
+                    .map((donation) => (
+                      <div key={donation.id} className="bg-gray-50 rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <span className="font-medium text-gray-900">
+                              {donation.donor_name}
+                            </span>
+                            <span className="ml-2 text-sm bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                              R$ {donation.amount.toFixed(2)}
+                            </span>
+                          </div>
+                          <span className="text-sm text-gray-500">
+                            {new Date(donation.created_at).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
+                        <p className="text-gray-700 text-sm">"{donation.message}"</p>
+                        <div className="mt-2 flex gap-2">
+                          <button
+                            onClick={() => approveDonorMessage(donation)}
+                            className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors"
+                          >
+                            Aprovar para Exibição
+                          </button>
+                        </div>
                       </div>
-                      <p className="text-gray-700 text-sm">"{donation.message}"</p>
-                    </div>
-                  ))}
+                    ))
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>Nenhuma mensagem de doador encontrada ainda.</p>
+                    <p className="text-sm mt-2">As mensagens aparecerão aqui quando os doadores fizerem contribuições com mensagens.</p>
+                  </div>
+                )}
               </div>
             </div>
           </>
