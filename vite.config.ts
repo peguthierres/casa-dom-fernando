@@ -7,11 +7,6 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  define: {
-    // Garantir que as variáveis de ambiente sejam injetadas corretamente
-    __VITE_SUPABASE_URL__: JSON.stringify(process.env.VITE_SUPABASE_URL),
-    __VITE_SUPABASE_ANON_KEY__: JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY),
-  },
   build: {
     sourcemap: false,
     rollupOptions: {
