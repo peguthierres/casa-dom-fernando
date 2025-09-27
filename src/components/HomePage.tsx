@@ -1,12 +1,12 @@
 import React from 'react';
 import { Heart, Home, Users, Star, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { supabase, DonorMessage, CampaignStats } from '../lib/supabase';
+import { supabase, DonorMessage, CampaignStats, Donation } from '../lib/supabase';
 import Header from './Header';
 import Footer from './Footer';
 
 const HomePage: React.FC = () => {
-  const [donorMessages, setDonorMessages] = React.useState<DonorMessage[]>([]);
+  const [displayMessages, setDisplayMessages] = React.useState<any[]>([]);
   const [campaignStats, setCampaignStats] = React.useState<CampaignStats>({
     goal_amount: 500000,
     title: 'Casa de Acolhimento Dom Fernando Legal',
@@ -16,25 +16,109 @@ const HomePage: React.FC = () => {
   });
 
   React.useEffect(() => {
-    loadDonorMessages();
+    loadDisplayMessages();
     loadCampaignStats();
   }, []);
 
-  const loadDonorMessages = async () => {
+  const loadDisplayMessages = async () => {
     try {
-      const { data } = await supabase
+      // Carregar mensagens aprovadas dos doadores
+      const { data: approvedMessages } = await supabase
         .from('donor_messages')
         .select('*')
         .eq('is_approved', true)
         .order('created_at', { ascending: false })
-        .limit(6);
+        .limit(10);
       
-      if (data) {
-        setDonorMessages(data);
+      // Carregar doações recentes concluídas
+      const { data: recentDonations } = await supabase
+        .from('donations')
+        .select('*')
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false })
+        .limit(15);
+      
+      const messages: any[] = [];
+      
+      // Adicionar mensagens aprovadas
+      if (approvedMessages) {
+        approvedMessages.forEach(msg => {
+          messages.push({
+            id: msg.id,
+            donor_name: msg.donor_name,
+            message: msg.message,
+            created_at: msg.created_at,
+            type: 'message'
+          });
+        });
       }
+      
+      // Adicionar doações sem mensagem como mensagens automáticas
+      if (recentDonations) {
+        recentDonations.forEach(donation => {
+          // Se a doação não tem mensagem ou a mensagem não foi aprovada ainda
+          const hasApprovedMessage = approvedMessages?.some(msg => 
+            msg.donor_name === donation.donor_name && 
+            Math.abs(new Date(msg.created_at).getTime() - new Date(donation.created_at).getTime()) < 60000 // 1 minuto de diferença
+          );
+          
+          if (!hasApprovedMessage) {
+            const firstName = donation.donor_name.split(' ')[0];
+            const emojis = ['🎉', '❤️', '👏', '🙏', '✨', '💝', '🌟', '🤗', '💖', '🎊'];
+            const randomEmojis = [
+              emojis[Math.floor(Math.random() * emojis.length)],
+              emojis[Math.floor(Math.random() * emojis.length)]
+            ];
+            
+            messages.push({
+              id: `donation-${donation.id}`,
+              donor_name: donation.donor_name,
+              message: `${firstName} acabou de fazer uma doação! ${randomEmojis.join(' ')}`,
+              created_at: donation.created_at,
+              type: 'auto',
+              amount: donation.amount
+            });
+          }
+        });
+      }
+      
+      // Ordenar por data e limitar a 6 mensagens
+      const sortedMessages = messages
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 6);
+      
+      setDisplayMessages(sortedMessages);
     } catch (error) {
-      console.error('Error loading donor messages:', error);
+      console.error('Error loading display messages:', error);
+      // Em caso de erro, mostrar mensagens padrão
+      setDisplayMessages(getDefaultMessages());
     }
+  };
+
+  const getDefaultMessages = () => {
+    return [
+      {
+        id: 'default-1',
+        donor_name: 'Maria Silva',
+        message: 'Que Deus abençoe esse projeto maravilhoso. Os padres merecem todo nosso carinho e cuidado.',
+        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        type: 'message'
+      },
+      {
+        id: 'default-2',
+        donor_name: 'João Santos',
+        message: 'Apoio total a essa causa nobre. Que possamos construir um lar digno para nossos padres.',
+        created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+        type: 'message'
+      },
+      {
+        id: 'default-3',
+        donor_name: 'Ana Costa',
+        message: 'Minha família sempre foi acolhida pela igreja. Agora é nossa vez de retribuir.',
+        created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        type: 'message'
+      }
+    ];
   };
 
   const loadCampaignStats = async () => {
@@ -240,8 +324,32 @@ const HomePage: React.FC = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {donorMessages.length > 0 ? (
-              donorMessages.map((message, index) => (
+            {displayMessages.length > 0 ? (
+              displayMessages.map((message, index) => (
+                <div key={message.id} className={`bg-${getRandomColor(index).split('-')[1]}-50 rounded-lg p-6 border-l-4 border-${getRandomColor(index).split('-')[1]}-600`}>
+                  <div className="flex items-center mb-3">
+                    <div className={`${getRandomColor(index)} rounded-full w-10 h-10 flex items-center justify-center text-white font-bold`}>
+                      {getInitials(message.donor_name)}
+                    </div>
+                    <div className="ml-3">
+                      <h4 className="font-semibold text-gray-800">{message.donor_name}</h4>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-gray-500">{getTimeAgo(message.created_at)}</p>
+                        {message.type === 'auto' && message.amount && (
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                            R$ {message.amount.toFixed(0)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <p className={`text-gray-700 ${message.type === 'message' ? 'italic' : ''}`}>
+                    {message.type === 'message' ? `"${message.message}"` : message.message}
+                  </p>
+                </div>
+              ))
+            ) : (
+              getDefaultMessages().map((message, index) => (
                 <div key={message.id} className={`bg-${getRandomColor(index).split('-')[1]}-50 rounded-lg p-6 border-l-4 border-${getRandomColor(index).split('-')[1]}-600`}>
                   <div className="flex items-center mb-3">
                     <div className={`${getRandomColor(index)} rounded-full w-10 h-10 flex items-center justify-center text-white font-bold`}>
@@ -255,54 +363,6 @@ const HomePage: React.FC = () => {
                   <p className="text-gray-700 italic">"{message.message}"</p>
                 </div>
               ))
-            ) : (
-              // Mensagens padrão caso não haja mensagens no banco
-              <>
-                <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
-                  <div className="flex items-center mb-3">
-                    <div className="bg-blue-600 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
-                      M
-                    </div>
-                    <div className="ml-3">
-                      <h4 className="font-semibold text-gray-800">Maria Silva</h4>
-                      <p className="text-sm text-gray-500">Há 2 horas</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 italic">
-                    "Que Deus abençoe esse projeto maravilhoso. Os padres merecem todo nosso carinho e cuidado."
-                  </p>
-                </div>
-
-                <div className="bg-green-50 rounded-lg p-6 border-l-4 border-green-600">
-                  <div className="flex items-center mb-3">
-                    <div className="bg-green-600 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
-                      J
-                    </div>
-                    <div className="ml-3">
-                      <h4 className="font-semibold text-gray-800">João Santos</h4>
-                      <p className="text-sm text-gray-500">Há 5 horas</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 italic">
-                    "Apoio total a essa causa nobre. Que possamos construir um lar digno para nossos padres."
-                  </p>
-                </div>
-
-                <div className="bg-purple-50 rounded-lg p-6 border-l-4 border-purple-600">
-                  <div className="flex items-center mb-3">
-                    <div className="bg-purple-600 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
-                      A
-                    </div>
-                    <div className="ml-3">
-                      <h4 className="font-semibold text-gray-800">Ana Costa</h4>
-                      <p className="text-sm text-gray-500">Há 1 dia</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 italic">
-                    "Minha família sempre foi acolhida pela igreja. Agora é nossa vez de retribuir."
-                  </p>
-                </div>
-              </>
             )}
           </div>
 
