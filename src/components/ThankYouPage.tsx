@@ -36,6 +36,12 @@ const ThankYouPage: React.FC = () => {
         pixQrCode: location.state.pixQrCode || null,
         status: location.state.paymentMethod === 'pix' ? 'pending' : 'completed'
       });
+    } else {
+      // Se não há dados de doação, redirecionar para página de doação
+      console.log('Nenhum dado de doação encontrado, redirecionando...');
+      setTimeout(() => {
+        window.location.href = '/doacao';
+      }, 3000);
     }
   }, []);
   
@@ -77,6 +83,24 @@ const ThankYouPage: React.FC = () => {
     );
   }
 
+  // Se não há dados de doação válidos, mostrar mensagem de redirecionamento
+  if (!donationData.amount || donationData.amount < 1) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+            Nenhuma doação encontrada
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Não encontramos informações sobre sua doação. Você será redirecionado para a página de doações.
+          </p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto mb-4"></div>
+          <p className="text-sm text-gray-500">Redirecionando em alguns segundos...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <>
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 pt-8 pb-12">
