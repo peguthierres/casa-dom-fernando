@@ -5,7 +5,7 @@ Sistema de doações para a construção da Casa de Acolhimento Dom Fernando Leg
 ## 🚀 Configuração do Projeto
 
 ### 1. Configurar Supabase
-
+s
 1. Clique no botão "Supabase" nas configurações do projeto
 2. Crie um novo projeto ou conecte um existente
 3. As migrações do banco de dados serão aplicadas automaticamente
