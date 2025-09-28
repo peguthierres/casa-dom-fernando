@@ -1,34 +1,19 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Função para obter variáveis de ambiente com fallbacks
-const getEnvVar = (name: string): string => {
-  // Tentar diferentes formas de acessar as variáveis
-  const value = import.meta.env[name] || 
-                (typeof window !== 'undefined' && (window as any)[name]) ||
-                (typeof process !== 'undefined' && process.env && process.env[name]);
-  
-  return value || '';
-};
+// Handle both Netlify and local environment variable naming
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 
+                   import.meta.env.SUPABASE_DATABASE_URL || 
+                   '';
 
-const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
-const supabaseAnonKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 
+                       import.meta.env.SUPABASE_ANON_KEY || 
+                       '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('❌ ERRO CRÍTICO: Variáveis de ambiente do Supabase não encontradas!');
-  console.error('VITE_SUPABASE_URL:', supabaseUrl || 'NÃO DEFINIDA');
-  console.error('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey || 'NÃO DEFINIDA');
-  console.error('Verifique se as variáveis estão configuradas no ambiente de produção.');
-  
-  // Log adicional para debug no Netlify
-  console.error('Todas as variáveis disponíveis:', Object.keys(import.meta.env));
-  console.error('Modo:', import.meta.env.MODE);
-  console.error('Prod:', import.meta.env.PROD);
+  throw new Error('Supabase configuration missing. Please check environment variables.');
 }
 
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co', 
-  supabaseAnonKey || 'placeholder-key'
-);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Types
 export interface Donation {
