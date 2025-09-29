@@ -9,14 +9,14 @@ const Footer: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Logo and Mission */}
           <div>
-            {/* Adicione o logo aqui */}
+            {/* Bloco do logo adicionado */}
             <div className="mb-6">
               <Image
                 src="/logo-sao-miguel.webp"
                 alt="Logo da Diocese de São Miguel Paulista"
-                width={100} // Ajuste o tamanho da largura
-                height={150} // Ajuste o tamanho da altura
-                className="mx-auto md:mx-0 h-auto w-auto" // Centraliza o logo em telas pequenas e o alinha à esquerda em telas médias
+                width={100} 
+                height={150} 
+                className="mx-auto md:mx-0 h-auto w-auto" 
               />
             </div>
             {/* Fim do bloco do logo */}
