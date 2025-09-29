@@ -11,9 +11,12 @@ const StripeSettings: React.FC = () => {
   const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
   const [simulatingPayment, setSimulatingPayment] = useState(false);
   const [formData, setFormData] = useState({
-    publishable_key: '',
-    secret_key: '',
-    webhook_secret: '',
+    test_publishable_key: '',
+    test_secret_key: '',
+    test_webhook_secret: '',
+    prod_publishable_key: '',
+    prod_secret_key: '',
+    prod_webhook_secret: '',
     is_test_mode: true,
     pix_enabled: false
   });
@@ -35,7 +38,15 @@ const StripeSettings: React.FC = () => {
 
       const { data, error } = await supabase
         .from('stripe_config')
-        .select('*')
+        .select(`
+          *,
+          test_publishable_key,
+          test_secret_key,
+          test_webhook_secret,
+          prod_publishable_key,
+          prod_secret_key,
+          prod_webhook_secret
+        `)
         .single();
 
       if (error && error.code !== 'PGRST116') {
@@ -46,9 +57,12 @@ const StripeSettings: React.FC = () => {
       if (data) {
         setConfig(data);
         setFormData({
-          publishable_key: data.publishable_key || '',
-          secret_key: data.secret_key || '',
-          webhook_secret: data.webhook_secret || '',
+          test_publishable_key: data.test_publishable_key || '',
+          test_secret_key: data.test_secret_key || '',
+          test_webhook_secret: data.test_webhook_secret || '',
+          prod_publishable_key: data.prod_publishable_key || '',
+          prod_secret_key: data.prod_secret_key || '',
+          prod_webhook_secret: data.prod_webhook_secret || '',
           is_test_mode: data.is_test_mode,
           pix_enabled: data.pix_enabled
         });
@@ -65,39 +79,61 @@ const StripeSettings: React.FC = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
+      // Ensure we have a single configuration record
+      let configId = config?.id;
+      
+      if (!configId) {
+        // Create initial config if none exists
+        const { data: newConfig, error: createError } = await supabase
+          .from('stripe_config')
+          .insert([{
+            is_test_mode: formData.is_test_mode,
+            pix_enabled: formData.pix_enabled
+          }])
+          .select()
+          .single();
+          
+        if (createError) throw createError;
+        configId = newConfig.id;
+      }
+
       const dataToSave = {
         ...formData,
         updated_at: new Date().toISOString()
       };
 
-      if (config) {
-        const { error } = await supabase
-          .from('stripe_config')
-          .update(dataToSave)
-          .eq('id', config.id);
+      const { error } = await supabase
+        .from('stripe_config')
+        .update(dataToSave)
+        .eq('id', configId);
 
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('stripe_config')
-          .insert([dataToSave]);
-
-        if (error) throw error;
-      }
+      if (error) throw error;
 
       await loadStripeConfig();
       clearStripeCache(); // Limpar cache do Stripe
       setTestResult(null);
+      
+      alert('Configurações salvas com sucesso!');
     } catch (error) {
       console.error('Error saving Stripe config:', error);
+      alert('Erro ao salvar configurações. Tente novamente.');
     } finally {
       setSaving(false);
     }
   };
 
   const testStripeConnection = async () => {
-    if (!formData.publishable_key || !formData.secret_key) {
+    const currentSecretKey = formData.is_test_mode 
+      ? formData.test_secret_key 
+      : formData.prod_secret_key;
+      
+    const currentPublishableKey = formData.is_test_mode 
+      ? formData.test_publishable_key 
+      : formData.prod_publishable_key;
+
+    if (!currentPublishableKey || !currentSecretKey) {
       setTestResult('error');
+      alert('Por favor, preencha as chaves do modo selecionado antes de testar.');
       return;
     }
 
@@ -107,7 +143,7 @@ const StripeSettings: React.FC = () => {
       const response = await fetch('https://api.stripe.com/v1/balance', {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${formData.secret_key}`,
+          'Authorization': `Bearer ${currentSecretKey}`,
         },
       });
 
@@ -205,6 +241,38 @@ const StripeSettings: React.FC = () => {
     }
   };
 
+  const getCurrentKeys = () => {
+    if (formData.is_test_mode) {
+      return {
+        publishable_key: formData.test_publishable_key,
+        secret_key: formData.test_secret_key,
+        webhook_secret: formData.test_webhook_secret
+      };
+    } else {
+      return {
+        publishable_key: formData.prod_publishable_key,
+        secret_key: formData.prod_secret_key,
+        webhook_secret: formData.prod_webhook_secret
+      };
+    }
+  };
+
+  const updateCurrentKeys = (field: string, value: string) => {
+    if (formData.is_test_mode) {
+      setFormData({
+        ...formData,
+        [`test_${field}`]: value
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [`prod_${field}`]: value
+      });
+    }
+  };
+
+  const currentKeys = getCurrentKeys();
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -227,6 +295,9 @@ const StripeSettings: React.FC = () => {
           {/* Modo de Operação */}
           <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
             <h3 className="font-medium text-gray-800 mb-4">Modo de Operação</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Selecione o modo para configurar as chaves correspondentes. Ambos os modos podem ter chaves salvas simultaneamente.
+            </p>
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
@@ -240,6 +311,9 @@ const StripeSettings: React.FC = () => {
                 <div className="text-center">
                   <div className="font-semibold mb-1">Modo de Teste</div>
                   <div className="text-sm opacity-75">Use chaves pk_test_ e sk_test_</div>
+                  <div className="text-xs mt-1">
+                    {formData.test_publishable_key ? '✅ Configurado' : '⚠️ Não configurado'}
+                  </div>
                 </div>
               </button>
               
@@ -255,6 +329,9 @@ const StripeSettings: React.FC = () => {
                 <div className="text-center">
                   <div className="font-semibold mb-1">Modo de Produção</div>
                   <div className="text-sm opacity-75">Use chaves pk_live_ e sk_live_</div>
+                  <div className="text-xs mt-1">
+                    {formData.prod_publishable_key ? '✅ Configurado' : '⚠️ Não configurado'}
+                  </div>
                 </div>
               </button>
             </div>
@@ -291,14 +368,14 @@ const StripeSettings: React.FC = () => {
           {/* Chave Pública */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Chave Pública (Publishable Key)
+              Chave Pública {formData.is_test_mode ? '(Teste)' : '(Produção)'}
             </label>
             <div className="relative">
               <Key className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                value={formData.publishable_key}
-                onChange={(e) => setFormData({...formData, publishable_key: e.target.value})}
+                value={currentKeys.publishable_key}
+                onChange={(e) => updateCurrentKeys('publishable_key', e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder={formData.is_test_mode ? "pk_test_..." : "pk_live_..."}
               />
@@ -311,14 +388,14 @@ const StripeSettings: React.FC = () => {
           {/* Chave Secreta */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Chave Secreta (Secret Key)
+              Chave Secreta {formData.is_test_mode ? '(Teste)' : '(Produção)'}
             </label>
             <div className="relative">
               <Key className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input
                 type="password"
-                value={formData.secret_key}
-                onChange={(e) => setFormData({...formData, secret_key: e.target.value})}
+                value={currentKeys.secret_key}
+                onChange={(e) => updateCurrentKeys('secret_key', e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder={formData.is_test_mode ? "sk_test_..." : "sk_live_..."}
               />
@@ -331,14 +408,14 @@ const StripeSettings: React.FC = () => {
           {/* Webhook Secret */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Webhook Secret
+              Webhook Secret {formData.is_test_mode ? '(Teste)' : '(Produção)'}
             </label>
             <div className="relative">
               <Settings className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input
                 type="password"
-                value={formData.webhook_secret}
-                onChange={(e) => setFormData({...formData, webhook_secret: e.target.value})}
+                value={currentKeys.webhook_secret}
+                onChange={(e) => updateCurrentKeys('webhook_secret', e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="whsec_..."
               />
@@ -373,7 +450,7 @@ const StripeSettings: React.FC = () => {
             
             <button
               onClick={testStripeConnection}
-              disabled={testing || !formData.publishable_key || !formData.secret_key}
+              disabled={testing || !currentKeys.publishable_key || !currentKeys.secret_key}
               className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-200 disabled:bg-gray-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               {testing ? (
@@ -462,31 +539,37 @@ const StripeSettings: React.FC = () => {
       {/* Instruções */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h3 className="font-medium text-blue-800 mb-3">Como configurar o Stripe:</h3>
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded">
+          <p className="text-sm text-green-800">
+            <strong>Novo Sistema:</strong> Agora você pode salvar chaves de teste e produção simultaneamente. 
+            Alterne entre os modos para configurar cada conjunto de chaves separadamente.
+          </p>
+        </div>
         <ol className="list-decimal list-inside space-y-2 text-sm text-blue-700">
           <li>Acesse o <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" className="underline">Dashboard do Stripe</a></li>
-          <li>Vá em "Developers" → "API keys"</li>
-          <li>Copie a "Publishable key" e "Secret key"</li>
+          <li>Vá em "Developers" → "API keys" e alterne entre Test/Live no topo</li>
+          <li>Configure primeiro as chaves de TESTE, depois as de PRODUÇÃO</li>
+          <li>Copie as chaves correspondentes ao modo selecionado</li>
           <li>Para webhooks, vá em "Developers" → "Webhooks"</li>
-          <li>Crie um novo endpoint: <code className="bg-white px-1 rounded">{window.location.origin.replace('casadomfernando-uov1.bolt.host', 'your-supabase-project.supabase.co')}/functions/v1/stripe-webhook</code></li>
+          <li>Crie endpoints separados para teste e produção</li>
           <li>Selecione eventos: checkout.session.completed, payment_intent.succeeded, payment_intent.payment_failed</li>
-          <li>Copie o "Signing secret" (whsec_...)</li>
-          <li>Cole as chaves nos campos acima e teste a conexão</li>
+          <li>Copie os "Signing secrets" correspondentes</li>
+          <li>Salve as configurações e teste cada modo separadamente</li>
         </ol>
         
         <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
           <p className="text-xs text-yellow-800">
-            <strong>Importante:</strong> Use chaves de teste (pk_test_, sk_test_) durante desenvolvimento 
-            e chaves de produção (pk_live_, sk_live_) apenas quando estiver pronto para receber pagamentos reais.
+            <strong>Importante:</strong> Configure ambos os modos. Use teste durante desenvolvimento 
+            e alterne para produção quando estiver pronto para receber pagamentos reais.
           </p>
         </div>
         
         <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded">
           <p className="text-xs text-red-800">
-            <strong>Status das Transações:</strong> Em modo de teste, use as "Ferramentas de Teste" acima para simular 
-            pagamentos concluídos. Em produção, os webhooks do Stripe atualizam automaticamente os status.
+            <strong>Alternância de Modos:</strong> Ao alternar entre teste e produção, o sistema 
+            automaticamente usa as chaves correspondentes. Ambas ficam salvas no banco de dados.
           </p>
         </div>
-        
       </div>
     </div>
   );
