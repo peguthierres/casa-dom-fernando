@@ -42,6 +42,12 @@ export interface StripeConfig {
   publishable_key?: string;
   secret_key?: string;
   webhook_secret?: string;
+  test_publishable_key?: string;
+  test_secret_key?: string;
+  test_webhook_secret?: string;
+  prod_publishable_key?: string;
+  prod_secret_key?: string;
+  prod_webhook_secret?: string;
   is_test_mode: boolean;
   pix_enabled: boolean;
   created_at: string;
