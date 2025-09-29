@@ -1,6 +1,6 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Facebook, Instagram } from 'lucide-react';
-import LogoSaoMiguel from '@/assets/logo-sao-miguel.webp'; // Ajuste o caminho conforme sua estrutura de pastas
+import { Heart, Mail, Phone, MapPin, Facebook, Instagram } from 'lucide-react';
+import Image from 'next/image'; // Importe o componente Image do Next.js
 
 const Footer: React.FC = () => {
   return (
@@ -9,23 +9,21 @@ const Footer: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Logo and Mission */}
           <div>
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-600 p-2 rounded-full flex items-center justify-center">
-                <img
-                  src={LogoSaoMiguel}
-                  alt="Logo São Miguel"
-                  className="h-8 w-auto" // Ajuste o tamanho conforme necessário
-                  style={{ background: 'transparent' }}
-                />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold">Casa Presbiteral</h3>
-                <p className="text-sm text-gray-300">Dom Fernando Legal</p>
-              </div>
+            {/* Adicione o logo aqui */}
+            <div className="mb-6">
+              <Image
+                src="/logo-sao-miguel.webp"
+                alt="Logo da Diocese de São Miguel Paulista"
+                width={100} // Ajuste o tamanho da largura
+                height={150} // Ajuste o tamanho da altura
+                className="mx-auto md:mx-0 h-auto w-auto" // Centraliza o logo em telas pequenas e o alinha à esquerda em telas médias
+              />
             </div>
+            {/* Fim do bloco do logo */}
+
             <p className="text-gray-300 text-sm leading-relaxed">
-              Um projeto da Diocese de São Miguel Paulista dedicado a proporcionar 
-              cuidados dignos e amorosos para sacerdotes que consagraram suas vidas 
+              Um projeto da Diocese de São Miguel Paulista dedicado a proporcionar
+              cuidados dignos e amorosos para sacerdotes que consagraram suas vidas
               ao serviço da Igreja e da comunidade católica.
             </p>
           </div>
@@ -70,6 +68,7 @@ const Footer: React.FC = () => {
                 <Instagram className="h-4 w-4" />
               </a>
             </div>
+
             <div>
               <h5 className="font-medium mb-2">Informações Importantes</h5>
               <ul className="space-y-1 text-sm text-gray-300">
@@ -83,11 +82,11 @@ const Footer: React.FC = () => {
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
           <p>
-            © 2024 Casa Presbiteral Dom Fernando Legal - Diocese de São Miguel Paulista. 
+            © 2024 Casa Presbiteral Dom Fernando Legal - Diocese de São Miguel Paulista.
             Todos os direitos reservados.
           </p>
           <p className="mt-2">
-            Desenvolvido com <span className="inline-block align-middle"><img src={LogoSaoMiguel} alt="Logo São Miguel" className="h-4 w-auto inline" /></span> para uma causa nobre
+            Desenvolvido com ❤️ para uma causa nobre
           </p>
         </div>
       </div>
