@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, Heart, Home, ArrowLeft } from 'lucide-react';
+import { CheckCircle, Home, ArrowLeft, ArrowUpCircle } from 'lucide-react'; // Importação atualizada
 import { Link, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Header from './Header';
@@ -106,6 +106,17 @@ const ThankYouPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 pt-8 pb-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
+          {/* O logo no topo da página */}
+          <div className="flex justify-center mb-8">
+            <img
+              src="/logo-sao-miguel.webp"
+              alt="Logo da Diocese de São Miguel Paulista"
+              width={100}
+              height={150}
+              className="object-contain"
+            />
+          </div>
+
           <div className="mb-8">
             <CheckCircle className="h-24 w-24 text-green-500 mx-auto mb-6" />
             <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">
@@ -173,7 +184,14 @@ const ThankYouPage: React.FC = () => {
               </div>
 
               <div className="text-center">
-                <Heart className="h-20 w-20 text-blue-600 mx-auto mb-4" />
+                {/* Ícone de coração substituído por uma imagem */}
+                <img
+                  src="/logo-sao-miguel.webp"
+                  alt="Logo da Diocese de São Miguel Paulista"
+                  width={50}
+                  height={100}
+                  className="object-contain mx-auto mb-4"
+                />
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">
                   Sua Contribuição Importa
                 </h3>
@@ -243,7 +261,8 @@ const ThankYouPage: React.FC = () => {
               </div>
               
               <div className="bg-white rounded-lg p-6 shadow-md">
-                <Heart className="h-8 w-8 text-blue-600 mb-3" />
+                {/* Ícone de coração substituído por uma seta para cima */}
+                <ArrowUpCircle className="h-8 w-8 text-blue-600 mb-3" />
                 <h4 className="font-semibold text-gray-800 mb-2">
                   Doe Mensalmente
                 </h4>
