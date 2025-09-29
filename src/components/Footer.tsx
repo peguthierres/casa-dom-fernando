@@ -8,14 +8,15 @@ const Footer: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Logo and Mission */}
           <div>
-            {/* Bloco do logo com a tag <img> */}
-            <div className="mb-6">
+            {/* Bloco do logo com a tag <img> e tamanhos ajustados */}
+            <div className="mb-6 flex justify-center md:justify-start"> {/* Adicionei flexbox para centralizar em mobile */}
               <img
                 src="/logo-sao-miguel.webp"
                 alt="Logo da Diocese de São Miguel Paulista"
-                width={50}
-                height={100}
-                className="mx-auto md:mx-0 h-auto w-auto"
+                width={50}  // Largura definida para 50px
+                height={100} // Altura definida para 100px
+                // Removida as classes h-auto w-auto para permitir que width e height sejam aplicados
+                className="object-contain" // Garante que a imagem se encaixe sem cortar, se necessário
               />
             </div>
             {/* Fim do bloco do logo */}
