@@ -55,7 +55,7 @@ const LoginPage: React.FC = () => {
             Painel Administrativo
           </h2>
           <p className="text-gray-600">
-            Casa de Acolhimento Dom Fernando Legal
+            Casa Presbiteral Dom Fernando Legal
           </p>
         </div>
 

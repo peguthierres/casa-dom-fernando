@@ -8,17 +8,10 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   define: {
-    // Mapear variáveis do plugin Supabase do Netlify para os nomes esperados pelo código
-    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(
-      process.env.SUPABASE_DATABASE_URL || 
-      process.env.VITE_SUPABASE_URL || 
-      ''
-    ),
-    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(
-      process.env.SUPABASE_ANON_KEY || 
-      process.env.VITE_SUPABASE_ANON_KEY || 
-      ''
-    ),
+    'import.meta.env.SUPABASE_DATABASE_URL': JSON.stringify(process.env.SUPABASE_DATABASE_URL || ''),
+    'import.meta.env.SUPABASE_ANON_KEY': JSON.stringify(process.env.SUPABASE_ANON_KEY || ''),
+    'import.meta.env.SUPABASE_SERVICE_ROLE_KEY': JSON.stringify(process.env.SUPABASE_SERVICE_ROLE_KEY || ''),
+    'import.meta.env.SUPABASE_JWT_SECRET': JSON.stringify(process.env.SUPABASE_JWT_SECRET || ''),
   },
   build: {
     sourcemap: false,

@@ -25,8 +25,8 @@ export default function DonationPage() {
     
     // Debug das variáveis de ambiente no carregamento da página
     console.log('=== DEBUG DONATION PAGE ===');
-    console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL ? 'Definida' : 'NÃO DEFINIDA');
-    console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Definida' : 'NÃO DEFINIDA');
+    console.log('SUPABASE_DATABASE_URL:', import.meta.env.SUPABASE_DATABASE_URL ? 'Definida' : 'NÃO DEFINIDA');
+    console.log('SUPABASE_ANON_KEY:', import.meta.env.SUPABASE_ANON_KEY ? 'Definida' : 'NÃO DEFINIDA');
     console.log('Modo:', import.meta.env.MODE);
     console.log('Produção:', import.meta.env.PROD);
     console.log('Todas as variáveis:', Object.keys(import.meta.env));
@@ -204,7 +204,7 @@ export default function DonationPage() {
             Faça sua Doação
           </h1>
           <p className="text-lg text-gray-600">
-            Contribua para a construção da Casa de Acolhimento Dom Fernando Legal
+            Contribua para a construção da Casa Presbiteral Dom Fernando Legal
           </p>
         </div>
 

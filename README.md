@@ -1,6 +1,6 @@
-# Casa de Acolhimento Dom Fernando Legal
+# Casa Presbiteral Dom Fernando Legal
 
-Sistema de doações para a construção da Casa de Acolhimento Dom Fernando Legal da Diocese de São Miguel Paulista.
+Sistema de doações para a construção da Casa Presbiteral Dom Fernando Legal da Diocese de São Miguel Paulista.
 
 ## 🚀 Configuração do Projeto
 

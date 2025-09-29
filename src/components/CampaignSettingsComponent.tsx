@@ -15,8 +15,8 @@ const CampaignSettingsComponent: React.FC<CampaignSettingsProps> = ({
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     goal_amount: settings?.goal_amount || 500000,
-    title: settings?.title || 'Casa de Acolhimento Dom Fernando Legal',
-    description: settings?.description || 'Ajude-nos a construir a Casa de Acolhimento Dom Fernando Legal para os padres idosos da Diocese de São Miguel Paulista.',
+    title: settings?.title || 'Casa Presbiteral Dom Fernando Legal',
+    description: settings?.description || 'Ajude-nos a construir a Casa Presbiteral Dom Fernando Legal para os padres idosos da Diocese de São Miguel Paulista.',
     is_active: settings?.is_active ?? true
   });
 
@@ -187,7 +187,7 @@ const CampaignSettingsComponent: React.FC<CampaignSettingsProps> = ({
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                placeholder="Ajude-nos a construir a Casa de Acolhimento Dom Fernando Legal..."
+                placeholder="Ajude-nos a construir a Casa Presbiteral Dom Fernando Legal..."
               />
             </div>
             <p className="text-sm text-gray-500 mt-1">

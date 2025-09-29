@@ -28,7 +28,7 @@ const Header: React.FC = () => {
               <Heart className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-blue-800">Casa de Acolhimento</h1>
+              <h1 className="text-xl font-bold text-blue-800">Casa Presbiteral</h1>
               <p className="text-xs sm:text-sm text-gray-600">Dom Fernando Legal</p>
             </div>
           </Link>

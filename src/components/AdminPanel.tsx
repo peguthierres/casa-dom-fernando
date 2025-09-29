@@ -259,7 +259,7 @@ const AdminPanel: React.FC = () => {
         {/* Header */}
         <div className="mb-8 flex justify-between items-start">
           <div>
-          <h1 className="text-3xl font-bold text-gray-800">Painel Administrativo - Casa de Acolhimento Dom Fernando Legal</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Painel Administrativo - Casa Presbiteral Dom Fernando Legal</h1>
           <p className="text-gray-600 mt-2">
             Gerencie as doações, imagens do projeto e acompanhe o progresso da campanha
           </p>

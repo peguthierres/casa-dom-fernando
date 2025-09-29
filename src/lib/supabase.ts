@@ -1,13 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Handle both Netlify and local environment variable naming
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 
-                   import.meta.env.SUPABASE_DATABASE_URL || 
-                   '';
-
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 
-                       import.meta.env.SUPABASE_ANON_KEY || 
-                       '';
+const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL || '';
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Supabase configuration missing. Please check environment variables.');

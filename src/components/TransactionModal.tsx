@@ -337,7 +337,7 @@ const generateReceiptHTML = (donation: Donation): string => {
 <body>
     <div class="header">
         <h1>COMPROVANTE DE DOAÇÃO</h1>
-        <h2>Casa de Acolhimento Dom Fernando Legal</h2>
+        <h2>Casa Presbiteral Dom Fernando Legal</h2>
         <h2>Diocese de São Miguel Paulista</h2>
     </div>
 

@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
                 <Heart className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-lg font-bold">Casa de Acolhimento</h3>
+                <h3 className="text-lg font-bold">Casa Presbiteral</h3>
                 <p className="text-sm text-gray-300">Dom Fernando Legal</p>
               </div>
             </div>
@@ -78,7 +78,7 @@ const Footer: React.FC = () => {
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
           <p>
-            © 2024 Casa de Acolhimento Dom Fernando Legal - Diocese de São Miguel Paulista. 
+            © 2024 Casa Presbiteral Dom Fernando Legal - Diocese de São Miguel Paulista. 
             Todos os direitos reservados.
           </p>
           <p className="mt-2">

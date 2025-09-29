@@ -16,6 +16,13 @@ export const getStripe = async () => {
 
       // Try to fetch from database using public function
       try {
+        const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL;
+        const supabaseKey = import.meta.env.SUPABASE_ANON_KEY;
+        
+        if (!supabaseUrl || !supabaseKey) {
+          throw new Error('Sistema temporariamente indisponível. Entre em contato com o administrador.');
+        }
+        
         const { data: config, error } = await supabase
           .rpc('get_public_stripe_config')
           .single();
@@ -62,8 +69,8 @@ export const createCardPayment = async (data: CreatePaymentData) => {
   try {
     console.log('Iniciando criação de pagamento com cartão:', data);
     
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL;
+    const supabaseKey = import.meta.env.SUPABASE_ANON_KEY;
     
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('Sistema temporariamente indisponível. Entre em contato com o administrador.');
@@ -129,8 +136,8 @@ export const createPixPayment = async (data: CreatePaymentData) => {
   try {
     console.log('Iniciando criação de pagamento PIX:', data);
     
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL;
+    const supabaseKey = import.meta.env.SUPABASE_ANON_KEY;
     
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('Sistema temporariamente indisponível. Entre em contato com o administrador.');

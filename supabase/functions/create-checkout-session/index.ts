@@ -73,7 +73,7 @@ serve(async (req) => {
       body: new URLSearchParams({
         'payment_method_types[]': 'card',
         'line_items[0][price_data][currency]': currency.toLowerCase(),
-        'line_items[0][price_data][product_data][name]': 'Doação - Casa de Acolhimento Dom Fernando Legal',
+        'line_items[0][price_data][product_data][name]': 'Doação - Casa Presbiteral Dom Fernando Legal',
         'line_items[0][price_data][product_data][description]': `Doação de ${donor_name}`,
         'line_items[0][price_data][unit_amount]': (amount * 100).toString(),
         'line_items[0][quantity]': '1',

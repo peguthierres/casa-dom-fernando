@@ -39,7 +39,7 @@ const AboutProject: React.FC = () => {
           <div className="text-center">
             <Heart className="h-16 w-16 mx-auto mb-6 text-blue-200" />
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Casa de Acolhimento Dom Fernando Legal
+              Casa Presbiteral Dom Fernando Legal
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto leading-relaxed">
               Um projeto da Diocese de São Miguel Paulista para acolher com dignidade 
@@ -116,7 +116,7 @@ const AboutProject: React.FC = () => {
               Detalhes do Projeto
             </h2>
             <p className="text-lg text-gray-600">
-              Conheça as características e facilidades da Casa de Acolhimento
+              Conheça as características e facilidades da Casa Presbiteral
             </p>
           </div>
 

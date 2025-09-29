@@ -262,10 +262,10 @@ const HomePage: React.FC = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-                Casa de Acolhimento Dom Fernando Legal
+                Casa Presbiteral Dom Fernando Legal
               </h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                A Casa de Acolhimento Dom Fernando Legal é um projeto da Diocese de São Miguel Paulista dedicado 
+                A Casa Presbiteral Dom Fernando Legal é um projeto da Diocese de São Miguel Paulista dedicado 
                 a proporcionar cuidados especializados e um ambiente acolhedor para sacerdotes 
                 que dedicaram suas vidas ao serviço da Igreja e da comunidade católica.
               </p>
@@ -302,7 +302,7 @@ const HomePage: React.FC = () => {
                 <div className="text-center">
                   <Home className="h-24 w-24 text-blue-600 mx-auto mb-4" />
                   <p className="text-blue-800 font-semibold text-lg">
-                    Projeto da Casa de Acolhimento Dom Fernando Legal
+                    Projeto da Casa Presbiteral Dom Fernando Legal
                   </p>
                 </div>
               </div>
