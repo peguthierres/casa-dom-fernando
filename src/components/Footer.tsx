@@ -1,5 +1,6 @@
 import React from 'react';
-import { Heart, Mail, Phone, MapPin, Facebook, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram } from 'lucide-react';
+import LogoSaoMiguel from '@/assets/logo-sao-miguel.webp'; // Ajuste o caminho conforme sua estrutura de pastas
 
 const Footer: React.FC = () => {
   return (
@@ -9,8 +10,13 @@ const Footer: React.FC = () => {
           {/* Logo and Mission */}
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-600 p-2 rounded-full">
-                <Heart className="h-6 w-6" />
+              <div className="bg-blue-600 p-2 rounded-full flex items-center justify-center">
+                <img
+                  src={LogoSaoMiguel}
+                  alt="Logo São Miguel"
+                  className="h-8 w-auto" // Ajuste o tamanho conforme necessário
+                  style={{ background: 'transparent' }}
+                />
               </div>
               <div>
                 <h3 className="text-lg font-bold">Casa Presbiteral</h3>
@@ -51,20 +57,19 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Redes Sociais</h4>
             <div className="flex space-x-4 mb-6">
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="bg-gray-700 p-2 rounded-full hover:bg-blue-600 transition-colors"
               >
                 <Facebook className="h-4 w-4" />
               </a>
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="bg-gray-700 p-2 rounded-full hover:bg-blue-600 transition-colors"
               >
                 <Instagram className="h-4 w-4" />
               </a>
             </div>
-            
             <div>
               <h5 className="font-medium mb-2">Informações Importantes</h5>
               <ul className="space-y-1 text-sm text-gray-300">
@@ -82,7 +87,7 @@ const Footer: React.FC = () => {
             Todos os direitos reservados.
           </p>
           <p className="mt-2">
-            Desenvolvido com ❤️ para uma causa nobre
+            Desenvolvido com <span className="inline-block align-middle"><img src={LogoSaoMiguel} alt="Logo São Miguel" className="h-4 w-auto inline" /></span> para uma causa nobre
           </p>
         </div>
       </div>
