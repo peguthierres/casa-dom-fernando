@@ -8,19 +8,15 @@ const Footer: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Logo and Mission */}
           <div>
-            {/* Bloco do logo com a tag <img> e tamanhos ajustados */}
-            <div className="mb-6 flex justify-center md:justify-start"> {/* Adicionei flexbox para centralizar em mobile */}
+            <div className="mb-6 flex justify-center md:justify-start">
               <img
                 src="/logo-sao-miguel.webp"
                 alt="Logo da Diocese de São Miguel Paulista"
-                width={50}  // Largura definida para 50px
-                height={100} // Altura definida para 100px
-                // Removida as classes h-auto w-auto para permitir que width e height sejam aplicados
-                className="object-contain" // Garante que a imagem se encaixe sem cortar, se necessário
+                width={50}
+                height={100}
+                className="object-contain"
               />
             </div>
-            {/* Fim do bloco do logo */}
-
             <p className="text-gray-300 text-sm leading-relaxed">
               Um projeto da Diocese de São Miguel Paulista dedicado a proporcionar
               cuidados dignos e amorosos para sacerdotes que consagraram suas vidas
@@ -86,7 +82,17 @@ const Footer: React.FC = () => {
             Todos os direitos reservados.
           </p>
           <p className="mt-2">
-            Desenvolvido com ❤️ para uma causa nobre
+            Com ❤️ para uma causa nobre
+          </p>
+          <p className="mt-1">
+            Desenvolvido por <a 
+              href="https://instagram.com/guthierresc" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              Sem. Guthierres
+            </a>
           </p>
         </div>
       </div>
