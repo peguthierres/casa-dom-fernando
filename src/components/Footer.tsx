@@ -13,8 +13,8 @@ const Footer: React.FC = () => {
               <img
                 src="/logo-sao-miguel.webp"
                 alt="Logo da Diocese de São Miguel Paulista"
-                width={100}
-                height={150}
+                width={50}
+                height={100}
                 className="mx-auto md:mx-0 h-auto w-auto"
               />
             </div>
