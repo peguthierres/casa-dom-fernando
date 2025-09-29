@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, CreditCard, User, Mail, Phone, Smartphone } from 'lucide-react';
+import { CreditCard, User, Mail, Phone, Smartphone } from 'lucide-react'; // Removido 'Heart'
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { createCardPayment, createPixPayment, redirectToCheckout } from '../lib/stripe';
@@ -198,20 +198,20 @@ export default function DonationPage() {
     <>
       <div className="min-h-screen pt-8 pb-12 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Adicione o logo aqui */}
-          <div className="flex justify-center mb-12">
+          {/* Bloco do logo */}
+          <div className="flex justify-center mb-6"> {/* Ajustei mb para 6, pois o h1 vem logo depois */}
             <img
               src="/logo-sao-miguel.webp"
               alt="Logo da Diocese de São Miguel Paulista"
-              width={50}
-              height={100}
+              width={100} // Largura definida para 100px
+              height={150} // Altura definida para 150px
               className="object-contain"
             />
           </div>
           {/* Fim do logo */}
           
           <div className="text-center mb-12">
-            <Heart className="h-16 w-16 mx-auto text-blue-600 mb-4" />
+            {/* O ícone Heart foi removido daqui */}
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               Faça sua Doação
             </h1>
