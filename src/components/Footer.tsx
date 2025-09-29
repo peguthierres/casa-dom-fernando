@@ -1,6 +1,5 @@
 import React from 'react';
 import { Heart, Mail, Phone, MapPin, Facebook, Instagram } from 'lucide-react';
-import Image from 'next/image'; // Importe o componente Image do Next.js
 
 const Footer: React.FC = () => {
   return (
@@ -9,14 +8,14 @@ const Footer: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Logo and Mission */}
           <div>
-            {/* Bloco do logo adicionado */}
+            {/* Bloco do logo com a tag <img> */}
             <div className="mb-6">
-              <Image
+              <img
                 src="/logo-sao-miguel.webp"
                 alt="Logo da Diocese de São Miguel Paulista"
-                width={100} 
-                height={150} 
-                className="mx-auto md:mx-0 h-auto w-auto" 
+                width={100}
+                height={150}
+                className="mx-auto md:mx-0 h-auto w-auto"
               />
             </div>
             {/* Fim do bloco do logo */}
@@ -68,7 +67,7 @@ const Footer: React.FC = () => {
                 <Instagram className="h-4 w-4" />
               </a>
             </div>
-
+            
             <div>
               <h5 className="font-medium mb-2">Informações Importantes</h5>
               <ul className="space-y-1 text-sm text-gray-300">
